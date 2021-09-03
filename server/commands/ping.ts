@@ -2,9 +2,16 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies with Pong!"),
+    .setName("echo")
+    .setDescription("Echoes the users message")
+    .addStringOption((option) =>
+      option
+        .setName("input")
+        .setDescription("the input for command")
+        .setRequired(true)
+    ),
   async execute(interaction) {
-    await interaction.reply("Pong!");
+    const value = interaction.options.getString("input");
+    await interaction.reply(`${interaction.user.username} said ${value}`);
   },
 };
