@@ -1,3 +1,4 @@
+import fs from "fs";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { SlashCommandBuilder } from "@discordjs/builders";
@@ -7,17 +8,18 @@ const clientId = process.env.CLIENT_ID as string;
 const guildId = process.env.GUILD_ID as string;
 const token = process.env.TOKEN as string;
 
-const commands = [
-  new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription("Replies with pong!"),
-  new SlashCommandBuilder()
-    .setName("server")
-    .setDescription("Replies with server info!"),
-  new SlashCommandBuilder()
-    .setName("user")
-    .setDescription("Replies with user info!"),
-].map((command) => command.toJSON());
+// TODO: FIx this
+const commands = [] as any;
+const commandFiles = fs
+  .readdirSync("./commands")
+  .filter((file) => file.endsWith(".ts"));
+
+console.log(commandFiles);
+
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  commands.push(command.data.toJSON());
+}
 
 const rest = new REST({ version: "9" }).setToken(token);
 
